@@ -2,7 +2,7 @@
 //  FindMyIPApp.swift
 //  FindMyIP
 //
-//  Created by Consultant on 21/11/2023.
+//  Created by Kojo on 21/11/2023.
 //
 
 import SwiftUI
