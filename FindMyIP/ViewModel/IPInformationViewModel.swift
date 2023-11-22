@@ -12,9 +12,10 @@ class IPInformationViewModel: ObservableObject {
     @Published var ipInformation: IPInformation?
     @Published var errorMessage: String?
     @Published var isLoading = false
+    @Published var showAlert = false
 
     func getIPInformation() {
-        isLoading = true
+        self.isLoading = true
         fetchIPInformation { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
@@ -23,6 +24,7 @@ class IPInformationViewModel: ObservableObject {
                     self?.ipInformation = info
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
+                    self?.showAlert = true
                 }
             }
         }

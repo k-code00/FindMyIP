@@ -9,10 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var viewModel = IPInformationViewModel()
-
+    
     var body: some View {
         List {
-            if let ipInfo = viewModel.ipInformation {
+            if viewModel.isLoading {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .padding()
+            } else if let ipInfo = viewModel.ipInformation {
                 Section(header: Text("IP Address")) {
                     Menu {
                         Button(action: {}) {
@@ -27,7 +31,7 @@ struct ContentView: View {
                     } label: {
                         HStack {
                             Text(ipInfo.ip ?? "Unknown")
-                                .font(.headline)
+                                .fontWeight(.light)
                                 .foregroundColor(.blue)
                             Spacer()
                             Image(systemName: "chevron.down")
@@ -37,15 +41,25 @@ struct ContentView: View {
                     }
                     .menuStyle(DefaultMenuStyle())
                 }
-            } else if let errorMessage = viewModel.errorMessage {
+            } else if viewModel.errorMessage != nil {
                 Section {
-                    Text("Error: \(errorMessage)")
+                    Text("Error: Refresh To Find IP")
                         .foregroundColor(.red)
                 }
             }
         }
+        .refreshable {
+            viewModel.getIPInformation()
+        }
         .onAppear {
             viewModel.getIPInformation()
+        }
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text("Cannot Find IP"),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
